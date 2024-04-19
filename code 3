@@ -1,0 +1,41 @@
+import matplotlib.pyplot as plt
+
+# Define the size of the plot
+plt.figure(figsize=(20, 20))
+
+# Define the x and y coordinates of the buildings
+buildings = {
+    'A': (2, 8),
+    'B': (5, 8),
+    'C': (8, 8),
+    'D': (3, 5),
+    'E': (6, 5),
+    'F': (9, 5),
+    'G': (2, 2),
+    'H': (5, 2),
+    'I': (8, 2),
+}
+
+# Plot the buildings as red squares
+for building, (x, y) in buildings.items():
+    plt.plot(x, y, 'rs', markersize=200)
+
+# Plot the roads as black lines
+plt.plot([1, 9], [9, 9], 'k-', linewidth=3)
+plt.plot([1, 9], [6, 6], 'k-', linewidth=3)
+plt.plot([1, 9], [3, 3], 'k-', linewidth=3)
+plt.plot([1, 1], [1, 9], 'k-', linewidth=3)
+plt.plot([4, 4], [1, 6], 'k-', linewidth=3)
+plt.plot([7, 7], [1, 9], 'k-', linewidth=3)
+
+# Add labels to the buildings
+for building, (x, y) in buildings.items():
+    plt.text(x + 0.2, y + 0.2, building, fontsize=12)
+
+# Add a title and axis labels
+plt.title("JUIT Campus Map")
+plt.xlabel("X Coordinate")
+plt.ylabel("Y Coordinate")
+
+# Display the plot
+plt.show()
