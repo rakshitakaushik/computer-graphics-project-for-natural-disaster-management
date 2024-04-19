@@ -1,0 +1,36 @@
+import time
+import random
+from graphics import *
+
+# Define the window dimensions
+win = GraphWin("JUIT Campus", 800, 600)
+
+# Define the buildings, roads, parking lots, and trees (same as before)
+
+# Define the person
+person = Circle(Point(400, 350), 10)
+person.setFill("red")
+person.draw(win)
+
+# Define a safety zone
+safety_zone = Rectangle(Point(200, 250), Point(600, 400))
+safety_zone.setOutline("green")
+safety_zone.setWidth(5)
+safety_zone.draw(win)
+
+# Simulate an earthquake
+for i in range(10):
+    dx = random.randint(-5, 5)
+    dy = random.randint(-5, 5)
+    person.move(dx, dy)
+    # Check if the person is in the safety zone
+    if safety_zone.getP1().getX() <= person.getCenter().getX() <= safety_zone.getP2().getX() and \
+            safety_zone.getP1().getY() <= person.getCenter().getY() <= safety_zone.getP2().getY():
+        person.setFill("green")
+    else:
+        person.setFill("red")
+    time.sleep(0.1)
+
+# Wait for a mouse click to close the window
+win.getMouse()
+win.close()
