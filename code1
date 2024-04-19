@@ -1,0 +1,54 @@
+!pip install --upgrade graphics.py
+from graphics import*
+from pyvirtualdisplay import Display
+
+display = Display(visible=0, size=(1400, 900))
+display.start()
+
+# Define the window dimensions
+win = GraphWin("JUIT Campus", 800, 600)
+
+# Define the buildings
+library = Rectangle(Point(100, 100), Point(200, 200))
+library.setFill("gray")
+library.draw(win)
+
+lecture_hall = Rectangle(Point(300, 100), Point(400, 200))
+lecture_hall.setFill("blue")
+lecture_hall.draw(win)
+
+cafeteria = Rectangle(Point(500, 100), Point(600, 200))
+cafeteria.setFill("yellow")
+cafeteria.draw(win)
+
+# Define the roads
+road1 = Line(Point(0, 300), Point(800, 300))
+road1.setWidth(10)
+road1.draw(win)
+
+road2 = Line(Point(400, 0), Point(400, 300))
+road2.setWidth(10)
+road2.draw(win)
+
+
+# Define the parking lots
+parking_lot1 = Rectangle(Point(0, 400), Point(200, 600))
+parking_lot1.setFill("light gray")
+parking_lot1.draw(win)
+
+parking_lot2 = Rectangle(Point(600, 400), Point(800, 600))
+parking_lot2.setFill("light gray")
+parking_lot2.draw(win)
+
+# Define the trees
+tree1 = Circle(Point(150, 250), 30)
+tree1.setFill("green")
+tree1.draw(win)
+
+tree2 = Circle(Point(650, 250), 30)
+tree2.setFill("green")
+tree2.draw(win)
+
+# Wait for a mouse click to close the window
+win.getMouse()
+win.close()
