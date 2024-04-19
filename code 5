@@ -1,0 +1,134 @@
+import cv2
+import numpy as np
+import heapq
+
+# Define the path to the image file on Google Drive
+image_path = '/content/drive/MyDrive/path/to/image1.jpg'
+
+# Load the image using OpenCV
+img = cv2.imread(image_path)
+
+# Define the start and end points
+start_point = (100, 100) # replace with your desired start point
+end_point = (400, 400) # replace with your desired end point
+
+# Define the colors for the start and end points
+start_color = (0, 0, 255) # red
+end_color = (0, 255, 0) # green
+
+# Define the colors for the visited and unvisited points
+visited_color = (255, 0, 0) # blue
+unvisited_color = (255, 255, 255) # white
+
+# Define the safe points
+safe_points = [(50, 50), (250, 250), (450, 450)] # replace with your desired safe points
+
+# Define the colors for the safe points
+safe_color = (0, 255, 255) # yellow
+
+# Create a copy of the image to draw the path and visited nodes on
+img_copy = img.copy()
+
+# Define a function to get the neighbors of a node
+def get_neighbors(node):
+    row, col = node
+    neighbors = [(row-1, col), (row+1, col), (row, col-1), (row, col+1)]
+    valid_neighbors = []
+    for neighbor in neighbors:
+        row, col = neighbor
+        if row >= 0 and row < img.shape[0] and col >= 0 and col < img.shape[1]:
+            valid_neighbors.append(neighbor)
+    return valid_neighbors
+
+# Define a function to get the distance between two nodes
+def get_distance(node1, node2):
+    row1, col1 = node1
+    row2, col2 = node2
+    return np.sqrt((row2-row1)**2 + (col2-col1)**2)
+
+# Define a function to apply Dijkstra's algorithm to find the shortest path between two nodes
+def dijkstra(start, end):
+    queue = [(0, start)]
+    visited = {}
+    dist = {}
+    prev = {}
+    for row in range(img.shape[0]):
+        for col in range(img.shape[1]):
+            visited[(row, col)] = False
+            dist[(row, col)] = float('inf')
+            prev[(row, col)] = None
+    dist[start] = 0
+    while len(queue) > 0:
+        curr_dist, curr_node = heapq.heappop(queue)
+        if visited[curr_node]:
+            continue
+        visited[curr_node] = True
+        if curr_node == end:
+            break
+        for neighbor in get_neighbors(curr_node):
+            if visited[neighbor]:
+                continue
+            alt_dist = curr_dist + get_distance(curr_node, neighbor)
+            if alt_dist < dist[neighbor]:
+                dist[neighbor] = alt_dist
+                prev[neighbor] = curr_node
+                heapq.heappush(queue, (alt_dist, neighbor))
+    path = []
+    curr_node = end
+    while curr_node is not None:
+        path.append(curr_node)
+        curr_node = prev[curr_node]
+    path.reverse()
+    return path
+
+import cv2
+from google.colab import drive
+from google.colab.patches import cv2_imshow
+
+# Mount Google Drive to access the image files
+drive.mount('/content/drive')
+
+# Define the path to the image file on Google Drive
+image_path = '/content/drive/MyDrive/path/to/image1.jpg'
+
+# Load the image using OpenCV
+img = cv2.imread(image_path)
+
+# Create a copy of the image for displaying the points selected by the user
+img_display = img.copy()
+
+# Define the callback function for mouse events
+def mouse_callback(event, x, y, flags, param):
+    global current_point, safe_point, img_display
+
+    # If the left mouse button is clicked, set the current point
+    if event == cv2.EVENT_LBUTTONDOWN:
+        current_point = (x, y)
+        print('Current point: ({}, {})'.format(x, y))
+        # Draw a circle to mark the current point on the display image
+        cv2.circle(img_display, current_point, 5, (0, 0, 255), -1)
+
+    # If the right mouse button is clicked, set the safe point
+    if event == cv2.EVENT_RBUTTONDOWN:
+        safe_point = (x, y)
+        print('Safe point: ({}, {})'.format(x, y))
+        # Draw a circle to mark the safe point on the display image
+        cv2.circle(img_display, safe_point, 5, (0, 255, 0), -1)
+
+# Create a window to display the image
+cv2.namedWindow('image')
+
+# Set the callback function for mouse events
+cv2.setMouseCallback('image', mouse_callback)
+
+# Display the image
+cv2_imshow(img_display)
+
+# Wait for the user to select two points
+current_point = None
+safe_point = None
+while current_point is None or safe_point is None:
+    cv2.waitKey(1)
+
+# Close the image window
+cv2.destroyAllWindows()
